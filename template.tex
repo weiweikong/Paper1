@@ -1,0 +1,425 @@
+%%%%%%%%%%%%%%%%%%%%%%% file template.tex %%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% This is a general template file for the LaTeX package SVJour3
+% for Springer journals.          Springer Heidelberg 2010/09/16
+%
+% Copy it to a new file with a new name and use it as the basis
+% for your article. Delete % signs as needed.
+%
+% This template includes a few options for different layouts and
+% content for various journals. Please consult a previous issue of
+% your journal as needed.
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% First comes an example EPS file -- just ignore it and
+% proceed on the \documentclass line
+% your LaTeX will extract the file if required
+\begin{filecontents*}{example.eps}
+%!PS-Adobe-3.0 EPSF-3.0;
+%%BoundingBox: 19 19 221 221
+%%CreationDate: Mon Sep 29 1997
+%%Creator: programmed by hand (JK)
+%%EndComments
+gsave
+newpath
+  20 20 moveto
+  20 220 lineto
+  220 220 lineto
+  220 20 lineto
+closepath
+2 setlinewidth
+gsave
+  .4 setgray fill
+grestore
+stroke
+grestore
+\end{filecontents*}
+%
+\RequirePackage{fix-cm}
+%
+\documentclass[twocolumn,a4paper]{svjour3}                     % onecolumn (standard format)
+%\documentclass[smallcondensed]{svjour3}     % onecolumn (ditto)
+%\documentclass[smallextended]{svjour3}       % onecolumn (second format)
+%\documentclass[twocolumn]{svjour3}          % twocolumn
+%
+\smartqed  % flush right qed marks, e.g. at end of proof
+%
+\usepackage{graphicx}
+%
+% \usepackage{mathptmx}      % use Times fonts if available on your TeX system
+%
+% insert here the call for the packages your document requires
+%\usepackage{latexsym}
+% etc.
+%
+% please place your own definitions here and don't use \def but
+% \newcommand{}{}
+%
+% Insert the name of "your journal" with
+% \journalname{myjournal}
+%
+
+\usepackage{epstopdf} % by Kong
+%\usepackage{natbib}
+\usepackage{url}
+%\bibliographystyle{abbrvnat}
+%\setcitestyle{authoryear}
+%\usepackage[sorting=none]{biblatex}
+
+%\usepackage[style=authoryear, maxcitenames=2, backend=bibtex]{biblatex}
+%\usepackage[style=authoryear-icomp,maxbibnames=9,maxcitenames=2,backend=biber]{biblatex}
+%\renewcommand*{\nameyeardelim}{\addcomma\space}
+%\addbibresource{template.bib} % note the .bib is required
+\usepackage[style=authoryear, maxcitenames=2, backend=bibtex]{biblatex}
+%\usepackage[style=authoryear]{biblatex}
+\addbibresource{template.bib} % note the .bib is required
+\renewcommand*{\nameyeardelim}{\addcomma\space}
+
+\begin{document}
+
+\title{A Ground-based Visual Guidance System for Autonomous Launch and Recovery of a UAV}
+%\subtitle{Do you have a subtitle?\\ If so, write it here}
+
+%\titlerunning{Short form of title}        % if too long for running head
+
+\author{Weiwei Kong, Daibing Zhang, Tianjiang Hu, Lincheng Shen, Jianwei Zhang %etc.
+}
+
+%\authorrunning{Short form of author list} % if too long for running head
+
+%\institute{W. Kong \at
+%            first address \\
+%              Tel.: +123-45-678910\\
+ %            Fax: +123-45-678910\\
+ %            \email{kongww.nudt@gmail.com}           %  \\
+%             \emph{Present address:} of F. Author  %  if needed
+%           \and
+%           S. Author \at
+ %             second address
+%}
+
+\date{Received: date / Accepted: date}
+% The correct dates will be entered by the editor
+
+
+\maketitle
+
+\begin{abstract}
+Purpose – This paper aims to deal with the problem of programming robots in industrial contexts, where the need of easy programming is
+increasing, while robustness and safety remain fundamental aspects.
+
+Design/methodology/approach – A novel approach of robot programming can be identified with the manual guidance that permits to the
+operator to freely move the robot through its task; the task can then be taught using Programming by Demonstration methods or simple
+reproduction.
+
+Findings – In this work, the different ways to achieve manual guidance are discussed and an implementation using a force/torque sensor is
+provided. Experimental results and a use case are also presented.
+
+Practical implications – Our approach offer increased accuracy in measuring aircraft position in GNSS-denied scenario when compare to human operation. 
+
+The use case shows how this methodology can be used with an industrial robot. An implementation in industrial contexts
+should be adjusted accordingly to ISO safety standards as described in the paper.
+
+Originality/value – This autonomous landing system caters for all of the different UAV system in operation, such as fixed-wing, rotary wing and other novel airframes.
+The practical experiments demonstrate that our system is robust to operational requirements.
+
+This paper presents a complete state-of-the-art of the problem and shows a real practical use case where the approach
+presented could be used to speed up the teaching process .
+ 
+
+As a plane comes in to land,
+
+\keywords{First keyword \and Second keyword \and More}
+% \PACS{PACS code1 \and PACS code2 \and more}
+% \subclass{MSC code1 \and MSC code2 \and more}
+\end{abstract}
+
+\section{Introduction}
+\label{intro}
+%无人机大量应用
+In the past decades, the use of unmanned aerial vehicles (UAVs) has increased tremendously in both military and civil fields. Although aerial robots have successfully used in several applications, there are still new research directions relate to them. Kumar et al. (\cite{kumar2012opportunities}) summarized the opportunities and challenges of this growing field, from the model design to high-level perception capability. All of these issues are concentrating on improving the degree of autonomy, which supports UAVs continue to be used in novel and surprising ways.
+
+% 自主降落能力至关重要
+No matter fixed-wing platform or rotors aircraft, a standard fully unmanned autonomous system(UAS) involves performing takeoffs, waypoint navigation and landings. Among them, automatic landing is the most delicate and critical phase of a UAV flight. Two technical reports (\cite{williams2004summary,manning2004role}) claimed that nearly 50\% of fixed-wing UAVs such as Hunter and Pioneer operated by the US military suffer accidents during landing. Also, almost 70\% of mishaps for Pioneer UAVs occurred during landing due to human factors. So a proper assist system is needed to enhance the reliability of landing task. Generally, two main capabilities of the system are required. The first one is navigation and localization of UAVs, and the second one is generating the appropriate guidance command to guide UAVs for a safe landing. In this paper, we mainly focus on the first issue and try to improve the guidance accuracy and robustness.
+
+
+% GNSS不行
+For manned aircraft, the traditional landing system uses a radio beam directed upward from the ground (\cite{mclean1990automatic, stevens2003aircraft}). By measuring the angular deviation from the beam through onboard equipment, the pilot knows the perpendicular displacement of the aircraft in the vertical channel. For the azimuth information, additional equipment is required. However, due to the size, weight, and power (SWap) constraints, it is impossible to equip these instruments in UAV. Thanks to the GNSS technology, we have seen lots of successful practical applications of autonomous UAVs in outdoor environments such as transportation, aerial photography and intelligent farming. Unfortunately, in some circumstances, such as urban or low altitude operations, the GNSS receiver antenna is prone to lose line-of-sight with satellites and making GNSS unable to deliver high quality position information (\cite{farrell1998gps}). So the autonomous landing in unknown or Global Navigation Satellite System(GNSS)-denied environment is still an open problem. 
+
+Visual based landing for UAVs has a long history. Generally, two types of visual approaches can be considered to maneuver a UAV　towards the landing area. The first type is the vision-based onboard system, which has been widely studied. The other is to guidance the aircraft using the ground-based camera system. Once the aircraft is detected by the camera during the landing process, its characteristics, such as type, location, heading and velocity, can be derived by the guidance system. Based on these information , the UAV could align itself carefully towards the landing area and adapt its velocity and acceleration to achieve safely landing. In this paper, we introduce a novel ground-based visual landing system. Setting up the cameras on the pan-tilt unit (PTU) would increase the effective field of view (FOV) of cameras and the distance at which a reliable lock could be established and maintained. 
+
+
+The key contributions of this papers are
+- This method is suite for GNSS-denied environment.
+- 
+- 
+
+
+Two key elements of the landing problem are
+Detecting the UAV and its motion
+Calculating the location of the UAV relative to the landing filed
+
+Basic Assumption:
+target is moving slowly, normal speed is 15m/s - 20m/s
+
+
+
+
+\section{Related Works}
+
+
+
+
+
+% One PTU with Stereo Camera -> Camera with independent camera
+Generally, stereo camera with PTU is used for accurate depth reconstruction.
+
+Sun, L.,Aragon-Camarasa, G., Rogers,S.,Siebert,J.P.: Accurate garment surface analysis using an active stereo robot head with application to dual-arm ﬂattening. In: 2015 IEEE International
+Conference on Robotics and Automation (ICRA) (May 2015)
+
+There are several researchers reviews the autonomous landing system.
+
+
+\subsection{Military Method}
+During the past two decades,
+
+
+
+\subsection{On-board Vision Method}
+
+% Selected Sentens
+Some groups presented the design and implementation of  
+For this reason, many developers designed vision-based navigation system as the most popular solution.
+The objective was to consider a 
+was demonstrated
+was found
+focused on identifying
+has been shown to
+was interpreted
+has been proposed
+were reported in
+suggested
+was developed
+
+% --------------- 
+The problem of accurately landing a UAV using vision-based control has been well developed for autonomous rotorcraft. 
+
+
+Mej{\'{\i}}as developed an image-based velocity references approach to visually control the altitude and lateral of the helicopter \cite{Mejias2006}. These vision velocity reference is combined with GPS and IMU data for more accurate and position measurements.
+
+An alternative to template-based method are optical-flow-aided position measurement systems. This approach was inspired by flying insect navigation strategies (\cite{Green2004}) and have been developed over the years to use onboard terrestrial and aerial robots. Triggered by the observations of honeybees, an optic flow regulator was introduced (\cite{Ruffier2014}). It allows a tethered rotorcraft to deal with non-stationary environments and the rotorcraft was able to land safely near a target which mounted on a moving platform both vertically and horizontally.
+
+%  QR-Code
+For cooperative localization some structured landing mark, such as 2D barcodes, helipad, could provide the relative transform between landing area and camera. Sharp et al. (\cite{Sharp2001}) solved the landing task of a Yamaha R-50 helicopter quite early by using the designed landing target for landing area recognition and estimating the relative position. 
+
+In 2012, a worthwhile study (\cite{richardsonautomated2013}) provide a framework for an automated vision-based recovery of an unmanned rotatory craft onto a moving platform. The onboard camera system calculates the distance and orientation of the UAV respect to the pattern and autonomous maneuvers the craft towards the landing platform. The workable limit for robust tracking was 10 m. For fixed-wing landing, German Aerospace Center (DLR) built and tested the 44-pound drone which successfully spotted a QR code on the roof of an Audi and touched down on the net affixed to the station wagon’s roof, at 43 mph (\cite{DLR_Landing}).
+
+However, due to the viewing angle of the lens and the size of tracking target, the detection distance of the sole of vision control method is limited.
+
+
+% TODO 有效探测距离
+
+% Laser  & Visual
+The combination of laser and visual system also has a long history in this field. In 2009, Garratt (\cite{garrattvisual2009}) considered a relatively low-cost guidance system through visual tracking and LIDAR positioning for autonomous recovery of a Yamaha R-max rotorcraft from ships at sea. This onboard visual system identifies and tracks the single beacon to determine both the distance and the orientation of the deck. Because the wavelength of the beacon is 650 nm, the craft can track it in bright sunlight. For the laser system, the laser rangefinder at a wavelength of 780 nm assembling with a spinning mirror was mounted at the bottom of the rotorcraft, which scans a conical pattern on the deck for estimating the position. The error of position estimation is better than 2 cm in practice, but the detection distance is only 100 m due to the size and the power of the selected LED. 
+
+While there is significant work using electro-optical pod, laser scanner and radar, those methods require more hardware for the aircraft to carry; therefore, in this case, we focus just on ground-based visual case, which is a lighter weight solution for UAV.
+
+% Because laser-based system are in most cases emit radiation and are therefore likely to reveal the aircraft location to hostile forces.
+
+\subsection{Ground-based Vision Method}
+ establish the geometric relationships between the  cameras.
+little works has been done 
+
+\[\frac{{ - b \pm \sqrt {{b^2} - 4ac} }}{{2a}}\]
+
+
+
+\section{Guidance and Control System}
+
+\subsection{Optical Model}
+
+%%% Scentence
+Also, errors in the internal and external camera calibration parameters marginally affects some of the estimates - the x-position and z-position, in particular.
+
+%%%
+In the basic setup, we separate the vehicle guidance and control into an inner loop and an outer loop, because it is much simpler and well-tested design approach. Because that the inner loop controller is already exist in ??? , we developed an efficient and robust outer guidance loop, which manage the visual information with the on-board sensors.
+
+\subsection{Tracking Algorithms}
+%%
+
+%%
+The active contour, although, has better accuracy, only the update frequency is around 5 Hz which is slow for accurate estimate.
+
+
+\subsection{Guidance System}
+The process of landing gets challenging by properties of the low accuracy of GNSS system, type of the landing pad and motion characteristics. 
+
+We present the simulation details and results for error analysis in different situations.
+
+Proper control of the PTU system can extend the detection distance while keeping the landing target in the field of view of the camera. In our application, we assume that the axis of rotation for pan and tilt coincide with the two optical center. The angle, $\theta$, as shown in Fig. \ref{fig:Fig01_FOV_PTU}, between the target and the center of the axis is calculated by 
+\begin{equation} \label{eq:FOV_PTU}
+\theta = f(p,d,\theta_{FOV}) = atan(p-\frac{d}{2},\frac{d}{2}cot(\frac{\theta_{FOV}}{2}))
+\end{equation}
+where $p$ is the location in pixels of the UAV projected onto the axis, $d$ is the width of the axis in pixels,  and $\theta_{FOV}$ is the field of view in radians. Let the target coordinate be at $(x_1, y_1)$, the desired location be at $(x_0, y_0)$. Using equation (\ref{eq:FOV_PTU}), the resulting of pan and tilt compensation to keep the target to the desired location is given by
+$$
+\theta_{pan} = f(x_1, l_x, \theta_{FOV\_{pan}}) - f(x_0, l_x, \theta_{FOV\_pan})
+$$
+$$
+\theta_{tilt} = f(y_1, l_y, \theta_{FOV\_tilt}) - f(y_0, l_y, \theta_{FOV\_tilt})
+$$
+where $l_x$ and $l_y$ are the image width and height.
+
+
+
+
+\begin{figure}[!tb]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Figs/Fig01_FOV_PTU.pdf}
+	\caption{The Geometry of PTU with respect to optical center and image plane.}
+	\label{fig:Fig01_FOV_PTU}
+\end{figure}
+
+\subsection{Control System}
+
+
+\section{System Architecture}
+\subsection{The Aircraft Platform}
+In our on-board system we can see three components:
+
+\subsection{The Ground-based Visual System}
+
+
+\subsection{The Communication System}
+We used a ??? from ??? company for this project.
+
+
+\section{Experiments}
+
+%%% Selected Sentences
+Our vision systems uses customized vision algorithms and off-the-shelf hardware to perform in real-time.
+Actual flight test results on our UAV testbed show our vision-based state estimates are accurate to within 5 cm in each axis of translation and 5 degrees in each axis of rotation.
+Fig 8 shows the results from the flight test, comparing the output of ... with ...
+The rotation estimates are all within 5 degrees accuracy.
+A total of seven experimental trails on two different days were performed to validate the vision system
+%%%
+
+\subsection{Tracking Algorithms Experiments}
+
+
+\subsection{Real time Autonomous Landing Experiments}
+
+% Sentence
+Once visual lock was achieved, the target was tracked using vision data feedback to the control system.
+%
+In our experiments we use DGPS which broadcast the UAV locations periodically and the aircraft was commanded to fly autonomously following several given GPS way-points until it being locked by our vision system. After received the visual references, the UAV was using vision data feedback to the control system and the GPS data was only recorded as the benchmark.
+
+
+
+\subsubsection{Field Environment and Landing Procedure}
+To complete the process of autonomous landing,
+
+
+
+\subsubsection{Real-flight with Short Baseline System}
+
+Figures ?? show the trajectories for short baseline system in the real flights.
+
+
+
+\subsubsection{Real-flight with Large Baseline System}
+
+
+In realistic application, it is very critical requirements that the lateral deviation error from the middle line of the runway and the lateral acceleration of the vehicle should be perfectly eliminated to minimize the damage of the vechicle.
+
+
+
+\subsection{Conclusion}
+
+
+Our approach demonstrated that the system has capability to precisely land a UAV in GNSS-denied scenario.
+
+
+
+\paragraph{Paragraph headings} Use paragraph headings as needed.
+
+\begin{equation}
+a^2+b^2=c^2
+\end{equation}
+
+% For one-column wide figures use
+\begin{figure}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+  \includegraphics{example.eps}
+% figure caption is below the figure
+\caption{Please write your figure caption here}
+\label{fig:1}       % Give a unique label
+\end{figure}
+%
+% For two-column wide figures use
+\begin{figure*}
+% Use the relevant command to insert your figure file.
+% For example, with the graphicx package use
+\includegraphics[width=0.75\textwidth]{example.eps}
+% figure caption is below the figure
+\caption{Please write your figure caption here}
+\label{fig:2}       % Give a unique label
+\end{figure*}
+%
+% For tables use
+\begin{table}
+% table caption is above the table
+\caption{Please write your table caption here}
+\label{tab:1}       % Give a unique label
+% For LaTeX tables use
+\begin{tabular}{lll}
+\hline\noalign{\smallskip}
+first & second & third  \\
+\noalign{\smallskip}\hline\noalign{\smallskip}
+number & number & number \\
+number & number & number \\
+\noalign{\smallskip}\hline
+\end{tabular}
+\end{table}
+
+
+%\begin{acknowledgements}
+%If you'd like to thank anyone, place your comments here
+%and remove the percent signs.
+%\end{acknowledgements}
+
+% BibTeX users please use one of
+%\bibliographystyle{spbasic}      % basic style, author-year citations
+%\bibliographystyle{spmpsci}      % mathematics and physical sciences
+%\bibliographystyle{spphys}       % APS-like style for physics
+%\bibliography{template}   % name your BibTeX data base
+
+% Non-BibTeX users please use
+%\begin{thebibliography}{}
+%
+% and use \bibitem to create references. Consult the Instructions
+% for authors for reference list style.
+%
+%\bibitem{RefJ}
+% Format for Journal Reference
+%Author, Article title, Journal, Volume, page numbers (year)
+% Format for books
+%\bibitem{RefB}
+%Author, Book title, page numbers. Publisher, place (year)
+% etc
+%\end{thebibliography}
+
+% BibTeX users please use one of
+%\bibliographystyle{spbasic}      % basic style, author-year citations
+%\bibliographystyle{spmpsci}      % mathematics and physical sciences
+%\bibliographystyle{usrt} % by Kong
+%\bibliographystyle{spphys}       % APS-like style for physics
+
+%\bibliography{template}   % name your BibTeX data base
+\printbibliography
+
+
+\end{document}
+% end of file template.tex
+
